@@ -1,23 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Twitch Multi Stream Auto-Mute",
-  "version": "2.0",
-
-  "description": "Automatically mutes Twitch streams you have open but are not watching. Very handy when following several streams at once.",
-  "icons": {
-    "128": "icon/128.png"
-  },
-
+  "name": "Mute Other Tabs",
+  "version": "1.0",
+  "description": "Mutes all other tabs except the one in focus.",
   "background": {
-    "service_worker": "background-service-worker.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
-  "content_scripts": [{
-    "matches": ["https://*.twitch.tv/*"],
-    "js": ["content-script.js"],
-    "run_at": "document_idle"
-  }],
   "permissions": [
     "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script.js"
+      ]
+    }
   ]
 }
