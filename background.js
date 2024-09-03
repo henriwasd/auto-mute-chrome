@@ -15,25 +15,22 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 function muteOtherTabs(currentTabId) {
   chrome.tabs.query({}, (tabs) => {
     let currentTabIsPlayingAudio = false
+    let currentTabIsPinned = false
 
     tabs.forEach((tab) => {
-      if (tab.pinned) {
-        // Skip pinned tabs
-        return
-      }
-
       if (tab.id === currentTabId) {
+        currentTabIsPinned = tab.pinned
         if (tab.audible) {
           currentTabIsPlayingAudio = true
           lastTabWithAudio = currentTabId
         }
         chrome.tabs.update(tab.id, { muted: false })
-      } else {
+      } else if (!tab.pinned) {
         chrome.tabs.update(tab.id, { muted: true })
       }
     })
 
-    if (!currentTabIsPlayingAudio && lastTabWithAudio !== null) {
+    if (!currentTabIsPlayingAudio && lastTabWithAudio !== null && !currentTabIsPinned) {
       chrome.tabs.query({ pinned: false }, (unpinnedTabs) => {
         const lastTab = unpinnedTabs.find(tab => tab.id === lastTabWithAudio)
         if (lastTab) {
